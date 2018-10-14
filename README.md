@@ -13,7 +13,3 @@ Maven
            5）dependencies 依赖，在dependency中添加具体依赖
            6）repositories 用来存储artifact(依赖文件)的的，一般都是某个仓库
 </pre>
-
-<pre>
-Gradle
-</pre>
