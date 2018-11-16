@@ -1,0 +1,143 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'idea'
+
+project.version ='1.2.3a'
+
+//默认配置
+def nexusUrl="https://repo1.maven.org/maven2/";
+if (System.properties['nexusUrl']!=null) {
+    nexusUrl = System.properties['nexusUrl'];
+   println("你现在使用的nexusUrl是"+nexusUrl)
+} else {
+    println("没有找到nexusUrl，使用通用的nexusUrl:"+nexusUrl+";可能会.2导致你下载jar包过慢")
+//    //加systemProp. 用来标记为系统属性
+   println("如果是在开发环境，请在~/.gradle/gradle.properties 中加入 'systemProp.nexusUrl = http://192.168.199.200:8081/nexus/content/groups/bonaparte_all/' ")
+}
+
+allprojects {
+    repositories {
+        maven{
+            url nexusUrl
+        }
+        mavenCentral();
+    }
+}
+
+war.baseName='bonaparte'
+war.destinationDir=file("target")
+
+war {
+    File propsFile = new File("${rootProject.projectDir}/src/main/webapp/META-INF/war.properties")
+    Properties props = new Properties()
+    props.setProperty('system_version', "${project.version}")
+    props.store(propsFile.newWriter(), null)
+}
+
+
+
+dependencies {
+    compile ('org.springframework:spring-core:4.1.2.RELEASE')
+    compile ('org.springframework:spring-context-support:4.1.2.RELEASE'){
+        exclude module: 'commons-logging'
+    }
+    compile 'org.springframework:spring-webmvc:4.1.2.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.1.2.RELEASE'
+    compile 'org.springframework.security:spring-security-web:3.2.3.RELEASE'
+    compile 'org.springframework.security:spring-security-config:3.2.3.RELEASE'
+    compile 'org.springframework:spring-aspects:4.1.2.RELEASE'
+    compile 'org.springframework:spring-oxm:4.1.2.RELEASE'
+    compile ('org.codehaus.castor:castor-xml:1.3.3') {
+        exclude module: 'commons-logging'
+    }
+    compile 'org.apache.velocity:velocity:1.6.1'
+    compile ('org.apache.velocity:velocity-tools:2.0') {
+        exclude module: 'commons-logging'
+    }
+    compile 'jstl:jstl:1.2'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile 'org.glassfish:javax.el:3.0.0'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'commons-collections:commons-collections:3.2.1'
+    compile 'commons-fileupload:commons-fileupload:1.2.2'
+    compile 'commons-io:commons-io:2.4'
+    compile 'mysql:mysql-connector-java:5.1.25'
+    compile 'c3p0:c3p0:0.9.1.2'
+    compile 'log4j:log4j:1.2.17'
+    compile 'org.slf4j:slf4j-log4j12:1.7.7'
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'com.google.guava:guava:18.0'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.springframework:spring-messaging:4.1.2.RELEASE'
+    compile 'org.springframework:spring-websocket:4.1.2.RELEASE'
+    compile 'com.alibaba:fastjson:1.2.5'
+    compile 'com.notnoop.apns:apns:0.2.3'
+    compile 'org.freemarker:freemarker:2.3.23'
+    compile 'javax.mail:mail:1.4.4'
+    compile 'org.mybatis:mybatis:3.2.8'
+    compile 'org.mybatis:mybatis-spring:1.2.2'
+    compile 'dom4j:dom4j:1.6.1'
+    compile 'joda-time:joda-time:2.1'
+    compile ('com.aliyun.oss:aliyun-sdk-oss:2.0.0') {
+        exclude module: 'httpclient'
+    }
+    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile 'org.quartz-scheduler:quartz-jobs:2.2.1'
+    compile 'io.netty:netty-all:4.1.0.Beta5'
+    compile 'org.eclipse.jetty:jetty-servlets:9.2.10.v20150310'
+    compile 'redis.clients:jedis:2.7.3'
+    compile 'org.mongodb:mongo-java-driver:3.1.0'
+    compile 'org.mongodb.morphia:morphia:1.1.0'
+    compile ('com.aliyun.odps:odps-sdk-core:0.21.3-public') {
+        exclude module: 'commons-logging'
+    }
+    compile 'com.timgroup:java-statsd-client:3.1.0'
+    compile 'com.aliyun.openservices:aliyun-log:0.6.0'
+    compile 'commons-codec:commons-codec:1.10'
+    compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.9'
+
+    compile ('org.apache.httpcomponents:httpclient:4.5.2') {
+        exclude module: 'commons-logging'
+    }
+    compile ('org.eclipse.birt.runtime:org.eclipse.birt.runtime:4.4.1'){
+        exclude module: 'commons-logging'
+        exclude(module: 'flute')
+        exclude(module: 'org.eclipse.orbit.mongodb')
+        exclude(module: 'org.apache.commons.codec')
+        exclude(module: 'org.apache.batik.pdf')
+    }
+    compile 'com.zaxxer:HikariCP:2.5.1'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    compile ('net.sf.jett:jett-core:0.10.0') {
+        exclude module: 'commons-logging'
+    }
+    compile('com.aliyun.openservices:ons-client:1.2.7.Final') {
+        exclude module: 'netty-all'
+    }
+
+    //dubbo依赖
+    compile('com.alibaba:dubbo:2.5.3') {
+        exclude module: 'spring'
+        exclude module: 'javassist'
+    }
+    compile group: 'org.javassist', name: 'javassist', version: '3.20.0-GA'
+    compile group: 'com.101tec', name: 'zkclient', version: '0.8'
+
+    compile('com.aliyun.opensearch:aliyun-sdk-opensearch:2.1.2') {
+        exclude module: 'slf4j-nop'
+    }
+    compile('org.drools:drools-spring:5.6.0.Final'){
+        exclude module: 'ecj'
+    }
+    compile('org.eclipse.jdt.core.compiler:ecj:4.4.2')
+
+    testCompile 'org.springframework:spring-test:4.1.2.RELEASE'
+    testCompile 'org.apache.tomcat.embed:tomcat-embed-core:8.0.8'
+    testCompile 'org.apache.tomcat.embed:tomcat-embed-websocket:8.0.8'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+    testCompile 'com.jayway.jsonpath:json-path-assert:0.8.1'
+    testCompile 'org.easymock:easymock:3.1'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile fileTree(dir: "${rootProject.projectDir}/src/main/webapp/WEB-INF/lib", include: '*.jar')
+}
